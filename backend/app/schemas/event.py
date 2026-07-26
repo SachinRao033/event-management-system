@@ -19,7 +19,8 @@ class EventBase(BaseModel):
         default="draft",
     )
 
-    image: str = Field(
+    image: Optional[str] = Field(
+        default=None,
         min_length=1,
         max_length=255,
     )
@@ -34,7 +35,8 @@ class EventBase(BaseModel):
         gt=0,
     )
 
-    location: str = Field(
+    location: Optional[str] = Field(
+        default=None,
         min_length=3,
         max_length=255,
     )
@@ -94,12 +96,10 @@ class EventUpdate(BaseModel):
 
 
 class EventResponse(EventBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     organizer_id: int
     available_seats: int
     created_at: datetime
     updated_at: datetime
-
-    model_config = ConfigDict(
-        from_attributes=True
-    )

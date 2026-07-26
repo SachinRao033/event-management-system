@@ -1,8 +1,19 @@
-from sqlalchemy import Column, Enum, ForeignKey, Integer, String, Text, DateTime, Time, Date
+from sqlalchemy import (
+    Column,
+    Date,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    Time,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.core.database import Base
+
 
 class Event(Base):
     __tablename__ = "events"
@@ -10,89 +21,98 @@ class Event(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     organizer_id = Column(
-         Integer, 
-         ForeignKey("users.id"), 
-         nullable = False
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
     )
-    
-    category_id = Column( 
-        Integer, 
-        ForeignKey("categories.id"), 
-        nullable = False
+
+    category_id = Column(
+        Integer,
+        ForeignKey("categories.id"),
+        nullable=False,
     )
 
     title = Column(
-        String(100), 
-        nullable = False
+        String(100),
+        nullable=False,
     )
 
     description = Column(
-        Text, 
-        nullable = True
+        Text,
+        nullable=True,
     )
 
     image = Column(
-        String(255), 
-        nullable=True
+        String(255),
+        nullable=True,
     )
 
     location = Column(
-        String(255), 
-        nullable = True
+        String(255),
+        nullable=True,
     )
 
     event_date = Column(
-        Date, 
-        nullable=False
+        Date,
+        nullable=False,
     )
 
     start_time = Column(
-        Time, 
-        nullable=False
+        Time,
+        nullable=False,
     )
 
     end_time = Column(
-        Time, 
-        nullable=False
+        Time,
+        nullable=False,
     )
 
     max_capacity = Column(
-        Integer, 
-        nullable=False
+        Integer,
+        nullable=False,
     )
 
     available_seats = Column(
-        Integer, 
-        nullable=False
+        Integer,
+        nullable=False,
     )
 
     status = Column(
-        Enum("published", "draft", "cancelled", name="event_status")
+        Enum(
+            "draft",
+            "published",
+            "cancelled",
+            name="event_status",
+        ),
+        nullable=False,
+        default="draft",
     )
 
     created_at = Column(
-        DateTime, 
-        server_default=func.now()
+        DateTime,
+        server_default=func.now(),
+        nullable=False,
     )
 
     updated_at = Column(
-        DateTime, 
-        server_default=func.now(), 
-        onupdate=func.now()
+        DateTime,
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
     )
 
     organizer = relationship(
         "User",
-        back_populates="events"
+        back_populates="events",
     )
 
     category = relationship(
         "Category",
-        back_populates="events"
+        back_populates="events",
     )
 
     registrations = relationship(
         "Registration",
-        back_populates="event"
+        back_populates="event",
+        cascade="all, delete-orphan",
     )
-
