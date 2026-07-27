@@ -1,12 +1,14 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
+from app.models.category import Category
 from app.schemas.category import CategoryCreate, CategoryUpdate
 from app.crud.category import (
     create_category as crud_create_category,
+    delete_category as crud_delete_category,
+    get_all_categories as crud_get_all_categories,
     get_category_by_id,
     get_category_by_name,
-    get_all_categories as crud_get_all_categories,
     update_category as crud_update_category,
 )
 
@@ -14,7 +16,7 @@ from app.crud.category import (
 def create_category(
     db: Session,
     category_create: CategoryCreate,
-):
+) -> Category:
     # Check if the category already exists
     db_category = get_category_by_name(
         db,
@@ -33,11 +35,35 @@ def create_category(
     )
 
 
+def get_category(
+    db: Session,
+    category_id: int,
+) -> Category:
+    db_category = get_category_by_id(
+        db,
+        category_id,
+    )
+
+    if not db_category:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Category not found.",
+        )
+
+    return db_category
+
+
+def get_all_categories(
+    db: Session,
+) -> list[Category]:
+    return crud_get_all_categories(db)
+
+
 def update_category(
     db: Session,
     category_id: int,
     category_update: CategoryUpdate,
-):
+) -> Category:
     # Find the category
     db_category = get_category_by_id(
         db,
@@ -73,10 +99,10 @@ def update_category(
     )
 
 
-def get_category(
+def delete_category(
     db: Session,
     category_id: int,
-):
+) -> None:
     db_category = get_category_by_id(
         db,
         category_id,
@@ -88,8 +114,13 @@ def get_category(
             detail="Category not found.",
         )
 
-    return db_category
+    if db_category.events:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot delete a category that contains events.",
+        )
 
-
-def get_all_categories(db: Session):
-    return crud_get_all_categories(db)
+    crud_delete_category(
+        db=db,
+        db_category=db_category,
+    )
