@@ -3,14 +3,16 @@ from sqlalchemy import text
 
 import app.models  # Registers all SQLAlchemy models
 
-from app.api import auth, events, category
+from app.api import auth, events, category, registration
 from app.core.database import Base, engine
+
 
 app = FastAPI()
 
 app.include_router(auth.router)
 app.include_router(events.router)
 app.include_router(category.router)
+app.include_router(registration.router)
 
 
 @app.on_event("startup")

@@ -32,7 +32,8 @@ class Registration(Base):
 
     registration_date = Column(
         DateTime, 
-        server_default=func.now()
+        server_default=func.now(),
+        nullable=False
     )
 
     status = Column(
@@ -43,13 +44,15 @@ class Registration(Base):
 
     created_at = Column(
         DateTime, 
-        server_default=func.now()
+        server_default=func.now(),
+        nullable=False
     )
 
     updated_at = Column(
         DateTime, 
         server_default=func.now(), 
-        onupdate=func.now()
+        onupdate=func.now(),
+        nullable=False
     )
 
     user = relationship(

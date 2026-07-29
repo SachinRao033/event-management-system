@@ -11,19 +11,19 @@ from app.crud.registration import (
     get_registration as crud_get_registration,
     get_registrations_by_user as crud_get_registrations_by_user,
     get_registrations_by_event as crud_get_registrations_by_event,
-    get_registration_by_user_and_event,
     update_registration as crud_update_registration,
 )
 
 from app.crud.user import get_user_by_id
 from app.crud.event import get_event_by_id
+from app.models.registration import Registration
 
 
 def create_registration(
     db: Session,
     registration_create: RegistrationCreate,
     user_id: int,
-):
+) -> Registration:
     # Check user exists
     db_user = get_user_by_id(
         db,
@@ -56,7 +56,7 @@ def create_registration(
         )
 
     # Check duplicate registration
-    existing_registration = get_registration_by_user_and_event(
+    existing_registration = crud_get_registration(
         db,
         user_id,
         registration_create.event_id,
@@ -90,7 +90,7 @@ def get_registration(
     db: Session,
     user_id: int,
     event_id: int,
-):
+) -> Registration:
     db_registration = crud_get_registration(
         db,
         user_id,
@@ -109,7 +109,7 @@ def get_registration(
 def get_registrations_by_user(
     db: Session,
     user_id: int,
-):
+) -> list[Registration]:
     db_user = get_user_by_id(
         db,
         user_id,
@@ -130,7 +130,7 @@ def get_registrations_by_user(
 def get_registrations_by_event(
     db: Session,
     event_id: int,
-):
+) -> list[Registration]:
     db_event = get_event_by_id(
         db,
         event_id,
@@ -153,7 +153,7 @@ def update_registration(
     user_id: int,
     event_id: int,
     registration_update: RegistrationUpdate,
-):
+) -> Registration:
     db_registration = crud_get_registration(
         db,
         user_id,
