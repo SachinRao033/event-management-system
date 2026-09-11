@@ -6,7 +6,8 @@ export default function Register() {
     const navigate = useNavigate();
     // register form state
     const [formData, setFormData] = useState({
-        name: "",
+        first_name: "",
+        last_name: "",
         email: "",
         password: "",
         confirmPassword: ""
@@ -30,8 +31,9 @@ export default function Register() {
 
         // hadel a registration form submission
         try {
-            await api.post("/register", {
-                name: formData.name,
+            await api.post("/auth/register", {
+                first_name: formData.first_name,
+                last_name: formData.last_name,
                 email: formData.email,
                 password: formData.password,
             });
@@ -59,10 +61,19 @@ export default function Register() {
                 {/* form registration */}
                 <form onSubmit={handleSubmit} className="w-100">
                     <div className="mb-3">
-                        <label className="form-label fw-medium ">Full Name:</label>
-                        <input type="text" className="form-control" placeholder="Enter Your Full  Name"
-                            name="name" required
-                            value={formData.name}
+                        <label className="form-label fw-medium ">First Name:</label>
+                        <input type="text" className="form-control" placeholder="Enter Your First  Name"
+                            name="first_name" required
+                            value={formData.first_name}
+                            onChange={handleChange}
+                        /> 
+                    </div> 
+
+                    <div className="mb-3">
+                        <label className="form-label fw-medium">Last Name:</label>
+                        <input type="text" className="form-control" placeholder="Enter Your Last Name"
+                            name="last_name" required
+                            value={formData.last_name}
                             onChange={handleChange}
                         />
                     </div>

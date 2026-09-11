@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from sqlalchemy import text
+from fastapi.middleware.cors import CORSMiddleware
 
 import app.models  # Registers all SQLAlchemy models
 
@@ -8,6 +9,14 @@ from app.core.database import Base, engine
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth.router)
 app.include_router(events.router)
