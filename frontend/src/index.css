@@ -11,3 +11,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+/* Register Page Styles */
+.eventhub-color{
+  color:#002147;  
+}
+
+.eventhub-button {
+  background-color:#002147;
+  color:#ffff
+}
+
+.eventhub-button:hover {
+  background-color:#ffff;
+  color:#002147;
+}
