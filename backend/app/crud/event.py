@@ -1,0 +1,89 @@
+from sqlalchemy.orm import Session
+
+from app.models.event import Event
+from app.schemas.event import EventCreate, EventUpdate
+
+
+def create_event(
+    db: Session,
+    event: EventCreate,
+    organizer_id: int,
+    available_seats: int,
+) -> Event:
+    db_event = Event(
+        organizer_id=organizer_id,
+        category_id=event.category_id,
+        title=event.title,
+        description=event.description,
+        image=event.image,
+        location=event.location,
+        event_date=event.event_date,
+        start_time=event.start_time,
+        end_time=event.end_time,
+        max_capacity=event.max_capacity,
+        available_seats=available_seats,
+        status=event.status,
+    )
+
+    db.add(db_event)
+    db.commit()
+    db.refresh(db_event)
+
+    return db_event
+
+
+def get_event_by_id(
+    db: Session,
+    event_id: int,
+) -> Event | None:
+    return (
+        db.query(Event)
+        .filter(Event.id == event_id)
+        .first()
+    )
+
+
+def get_all_events(
+    db: Session,
+) -> list[Event]:
+    return (
+        db.query(Event)
+        .order_by(Event.event_date)
+        .all()
+    )
+
+
+def get_events_by_category(
+    db: Session,
+    category_id: int,
+) -> list[Event]:
+    return (
+        db.query(Event)
+        .filter(Event.category_id == category_id)
+        .order_by(Event.event_date)
+        .all()
+    )
+
+
+def update_event(
+    db: Session,
+    db_event: Event,
+    event_update: EventUpdate,
+) -> Event:
+    update_data = event_update.model_dump(exclude_unset=True)
+
+    for key, value in update_data.items():
+        setattr(db_event, key, value)
+
+    db.commit()
+    db.refresh(db_event)
+
+    return db_event
+
+
+def delete_event(
+    db: Session,
+    db_event: Event,
+) -> None:
+    db.delete(db_event)
+    db.commit()
