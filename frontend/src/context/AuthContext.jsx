@@ -38,6 +38,21 @@ export function AuthProvider({children}) {
         getCurrentUser();
     }, []);
 
+    // Login user
+    const login = async (token) => {
+
+        localStorage.setItem("token", token);
+
+        const response = await api.get("/auth/me", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        setUser(response.data);
+    };
+
+
     // logout user
     const logout = ()=> {
         localStorage.removeItem("token");
@@ -47,6 +62,7 @@ export function AuthProvider({children}) {
     const value = {
         user,
         loading,
+        login,
         logout,
         isAuthenticated: !!user,
     };

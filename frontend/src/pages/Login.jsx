@@ -1,9 +1,11 @@
 import {Link, useNavigate } from "react-router-dom";
 import {useState} from "react";
 import api from "../services/api.js";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     // stores the local login form values
     const [formData, setFormData] = useState({
@@ -66,8 +68,11 @@ export default function Login() {
                 },
             });
 
-             // Save JWT token
-             localStorage.setItem("token", res.data.access_token);
+
+            await login(res.data.access_token);
+
+            // Save JWT token
+            localStorage.setItem("token", res.data.access_token);
 
              // login successful
              navigate("/home");
