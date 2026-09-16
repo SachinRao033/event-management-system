@@ -51,10 +51,24 @@ jobs:
           script: |
             cd /home/ubuntu/event-management-system
 
+            echo "Pull images from docker repo..."
             docker compose pull
 
+            echo "Stopping old containers..."
             docker compose down
 
+            echo "Starting application..."
             docker compose up -d
 
+            echo "Waiting for containers..."
+            sleep 15
+
+            echo "Container status:"
+            docker compose ps
+
+            echo "Cleaning unused Docker images..."
             docker image prune -f
+
+            echo "======================================"
+            echo "Deployment Completed Successfully"
+            echo "======================================"
